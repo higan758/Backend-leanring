@@ -8,13 +8,15 @@ import store from "./store/store"
 import ProductList from "./pages/product.jsx"
 import Register from "./components/Register.jsx"
 import Favourites from "./pages/favourites.jsx"
+import Home from "./pages/Home.jsx"
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<SelectPaymentType />} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/payment" element={<SelectPaymentType />} />
           <Route path="/khalti" element={<Khalti />} />
           <Route path="/success" element={<PaymentSuccess />} />
           <Route path="/login" element={<Login />} />
