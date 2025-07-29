@@ -1,726 +1,295 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Gamepad2, Mail, Lock, User, Github, Chrome, Apple, Check, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 
-const Register = (props) => {
+const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    agreeToTerms: false
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: null
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.username.trim()) {
+      newErrors.username = 'Username is required';
+    } else if (formData.username.length < 3) {
+      newErrors.username = 'Username must be at least 3 characters';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Simulate successful registration
-      if (formData.username && formData.email && formData.password && formData.agreeToTerms && passwordValidation.match) {
-        const userData = {
-          username: formData.username,
-          email: formData.email,
-          registrationTime: new Date().toISOString()
-        };
-        
-        // Call the onRegister prop function passed from App component
-        if (props.onRegister) {
-          props.onRegister(userData);
-        }
-        
-        console.log('Registration successful:', userData);
-      } else {
-        alert('Please fill all fields correctly and agree to terms');
-      }
-    }, 2000);
-  };
-
-  const socialLogins = [
-    { name: 'Google', icon: Chrome, color: '#dc2626' },
-    { name: 'GitHub', icon: Github, color: '#4b5563' },
-    { name: 'Apple', icon: Apple, color: '#1f2937' }
-  ];
-
-  // Password strength validation
-  const passwordValidation = {
-    length: formData.password.length >= 8,
-    uppercase: /[A-Z]/.test(formData.password),
-    lowercase: /[a-z]/.test(formData.password),
-    number: /\d/.test(formData.password),
-    match: formData.password === formData.confirmPassword && formData.confirmPassword !== ''
-  };
-
-  const getPasswordStrength = () => {
-    const validations = Object.values(passwordValidation);
-    const validCount = validations.filter(Boolean).length;
-    if (validCount === 0) return { strength: 0, label: '', color: '' };
-    if (validCount <= 2) return { strength: 25, label: 'Weak', color: '#ef4444' };
-    if (validCount <= 3) return { strength: 50, label: 'Fair', color: '#eab308' };
-    if (validCount <= 4) return { strength: 75, label: 'Good', color: '#3b82f6' };
-    return { strength: 100, label: 'Strong', color: '#10b981' };
-  };
-
-  const strengthInfo = getPasswordStrength();
-
-  const styles = {
-    container: {
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '32px 16px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    },
-    backgroundEffects: {
-      position: 'absolute',
-      inset: 0,
-      overflow: 'hidden'
-    },
-    backgroundInner: {
-      position: 'absolute',
-      inset: '-40px',
-      opacity: 0.5
-    },
-    backgroundCircle1: {
-      position: 'absolute',
-      top: '25%',
-      left: '25%',
-      width: '288px',
-      height: '288px',
-      backgroundColor: '#7c3aed',
-      borderRadius: '50%',
-      mixBlendMode: 'multiply',
-      filter: 'blur(64px)',
-      animation: 'pulse 2s infinite'
-    },
-    backgroundCircle2: {
-      position: 'absolute',
-      top: '75%',
-      right: '25%',
-      width: '288px',
-      height: '288px',
-      backgroundColor: '#ec4899',
-      borderRadius: '50%',
-      mixBlendMode: 'multiply',
-      filter: 'blur(64px)',
-      animation: 'pulse 2s infinite',
-      animationDelay: '1s'
-    },
-    backgroundCircle3: {
-      position: 'absolute',
-      bottom: '25%',
-      left: '33%',
-      width: '288px',
-      height: '288px',
-      backgroundColor: '#3b82f6',
-      borderRadius: '50%',
-      mixBlendMode: 'multiply',
-      filter: 'blur(64px)',
-      animation: 'pulse 2s infinite',
-      animationDelay: '2s'
-    },
-    cardWrapper: {
-      position: 'relative',
-      width: '100%',
-      maxWidth: '448px'
-    },
-    card: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      backdropFilter: 'blur(16px)',
-      borderRadius: '16px',
-      padding: '32px',
-      border: '1px solid rgba(168, 85, 247, 0.3)',
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-    },
-    header: {
-      textAlign: 'center',
-      marginBottom: '32px'
-    },
-    logoContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginBottom: '16px'
-    },
-    logoIcon: {
-      padding: '12px',
-      background: 'linear-gradient(to right, #7c3aed, #ec4899)',
-      borderRadius: '50%'
-    },
-    title: {
-      fontSize: '30px',
-      fontWeight: 'bold',
-      background: 'linear-gradient(to right, #c084fc, #f472b6)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
-      marginBottom: '8px'
-    },
-    subtitle: {
-      color: '#d1d5db'
-    },
-    form: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '24px'
-    },
-    fieldGroup: {
-      display: 'flex',
-      flexDirection: 'column'
-    },
-    label: {
-      display: 'block',
-      fontSize: '14px',
-      fontWeight: '500',
-      color: '#d1d5db',
-      marginBottom: '8px'
-    },
-    inputContainer: {
-      position: 'relative'
-    },
-    inputIcon: {
-      position: 'absolute',
-      left: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      color: '#9ca3af',
-      width: '20px',
-      height: '20px'
-    },
-    input: {
-      width: '100%',
-      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(168, 85, 247, 0.3)',
-      borderRadius: '8px',
-      paddingLeft: '44px',
-      paddingRight: '16px',
-      paddingTop: '12px',
-      paddingBottom: '12px',
-      color: 'white',
-      outline: 'none',
-      backdropFilter: 'blur(4px)',
-      transition: 'all 0.3s',
-      fontSize: '16px',
-      boxSizing: 'border-box'
-    },
-    inputWithIcon: {
-      paddingRight: '44px'
-    },
-    inputError: {
-      borderColor: 'rgba(239, 68, 68, 0.5)'
-    },
-    eyeButton: {
-      position: 'absolute',
-      right: '12px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      color: '#9ca3af',
-      background: 'none',
-      border: 'none',
-      cursor: 'pointer',
-      transition: 'color 0.3s'
-    },
-    strengthContainer: {
-      marginTop: '8px'
-    },
-    strengthHeader: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: '4px'
-    },
-    strengthLabel: {
-      fontSize: '12px',
-      color: '#9ca3af'
-    },
-    strengthValue: {
-      fontSize: '12px',
-      fontWeight: '500'
-    },
-    strengthBar: {
-      width: '100%',
-      height: '8px',
-      backgroundColor: '#374151',
-      borderRadius: '4px',
-      overflow: 'hidden'
-    },
-    strengthFill: {
-      height: '100%',
-      borderRadius: '4px',
-      transition: 'width 0.3s'
-    },
-    errorText: {
-      color: '#f87171',
-      fontSize: '12px',
-      marginTop: '4px'
-    },
-    requirementsCard: {
-      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-      borderRadius: '8px',
-      padding: '12px',
-      border: '1px solid rgba(168, 85, 247, 0.2)',
-      marginTop: '8px'
-    },
-    requirementsTitle: {
-      fontSize: '14px',
-      fontWeight: '500',
-      color: '#d1d5db',
-      marginBottom: '8px'
-    },
-    requirementsList: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '4px'
-    },
-    requirementItem: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px'
-    },
-    requirementText: {
-      fontSize: '12px'
-    },
-    termsContainer: {
-      display: 'flex',
-      alignItems: 'flex-start',
-      gap: '12px'
-    },
-    checkbox: {
-      width: '16px',
-      height: '16px',
-      accentColor: '#7c3aed',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      border: '1px solid rgba(168, 85, 247, 0.3)',
-      borderRadius: '4px',
-      marginTop: '4px'
-    },
-    termsText: {
-      fontSize: '14px',
-      color: '#d1d5db'
-    },
-    termsLink: {
-      color: '#c084fc',
-      textDecoration: 'none',
-      transition: 'color 0.3s'
-    },
-    registerButton: {
-      width: '100%',
-      background: 'linear-gradient(to right, #7c3aed, #ec4899)',
-      color: 'white',
-      fontWeight: '600',
-      padding: '12px 16px',
-      borderRadius: '8px',
-      border: 'none',
-      transition: 'all 0.3s',
-      cursor: 'pointer',
-      fontSize: '16px'
-    },
-    registerButtonDisabled: {
-      opacity: 0.5,
-      cursor: 'not-allowed'
-    },
-    loadingContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    spinner: {
-      width: '20px',
-      height: '20px',
-      border: '2px solid white',
-      borderTop: '2px solid transparent',
-      borderRadius: '50%',
-      animation: 'spin 1s linear infinite',
-      marginRight: '8px'
-    },
-    divider: {
-      margin: '24px 0'
-    },
-    dividerInner: {
-      position: 'relative'
-    },
-    dividerLine: {
-      position: 'absolute',
-      inset: 0,
-      display: 'flex',
-      alignItems: 'center'
-    },
-    dividerBorder: {
-      width: '100%',
-      borderTop: '1px solid rgba(168, 85, 247, 0.3)'
-    },
-    dividerText: {
-      position: 'relative',
-      display: 'flex',
-      justifyContent: 'center',
-      fontSize: '14px'
-    },
-    dividerTextSpan: {
-      padding: '0 8px',
-      backgroundColor: '#0f172a',
-      color: '#9ca3af'
-    },
-    socialButtons: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gap: '12px'
-    },
-    socialButton: {
-      backgroundColor: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(168, 85, 247, 0.3)',
-      borderRadius: '8px',
-      padding: '12px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      cursor: 'pointer',
-      transition: 'all 0.3s'
-    },
-    loginLink: {
-      marginTop: '32px',
-      textAlign: 'center'
-    },
-    loginText: {
-      color: '#d1d5db'
-    },
-    loginLinkText: {
-      color: '#c084fc',
-      fontWeight: '600',
-      textDecoration: 'none',
-      transition: 'color 0.3s'
-    },
-    footer: {
-      marginTop: '32px',
-      textAlign: 'center',
-      color: '#9ca3af',
-      fontSize: '14px'
+      // On successful registration
+      console.log('Registration successful', formData);
+      navigate('/'); // Redirect to home page
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrors({
+        ...errors,
+        server: 'Registration failed. Please try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const requirements = [
-    { key: 'length', label: 'At least 8 characters', valid: passwordValidation.length },
-    { key: 'uppercase', label: 'One uppercase letter', valid: passwordValidation.uppercase },
-    { key: 'lowercase', label: 'One lowercase letter', valid: passwordValidation.lowercase },
-    { key: 'number', label: 'One number', valid: passwordValidation.number }
-  ];
-
   return (
-    <div style={styles.container}>
-      {/* Background Effects */}
-      <div style={styles.backgroundEffects}>
-        <div style={styles.backgroundInner}>
-          <div style={styles.backgroundCircle1}></div>
-          <div style={styles.backgroundCircle2}></div>
-          <div style={styles.backgroundCircle3}></div>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Create your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Join our gaming community today
+        </p>
       </div>
 
-      <div style={styles.cardWrapper}>
-        {/* Register Card */}
-        <div style={styles.card}>
-          {/* Header */}
-          <div style={styles.header}>
-            <div style={styles.logoContainer}>
-              <div style={styles.logoIcon}>
-                <Gamepad2 style={{ width: '32px', height: '32px', color: 'white' }} />
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {errors.server && (
+            <div className="mb-4 bg-red-50 border-l-4 border-red-500 p-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-red-700">{errors.server}</p>
+                </div>
               </div>
             </div>
-            <h1 style={styles.title}>Join GameVault</h1>
-            <p style={styles.subtitle}>Create your gaming account</p>
-          </div>
+          )}
 
-          {/* Register Form */}
-          <div style={styles.form}>
-            {/* Username Field */}
-            <div style={styles.fieldGroup}>
-              <label htmlFor="username" style={styles.label}>Username</label>
-              <div style={styles.inputContainer}>
-                <User style={styles.inputIcon} />
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Username
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiUser className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type="text"
                   id="username"
                   name="username"
+                  type="text"
+                  autoComplete="username"
                   value={formData.username}
-                  onChange={handleInputChange}
-                  style={styles.input}
-                  placeholder="Choose a username"
-                  required
+                  onChange={handleChange}
+                  className={`block w-full pl-10 pr-3 py-2 border ${errors.username ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : 'border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500'} rounded-md shadow-sm`}
+                  placeholder="gamertag123"
                 />
               </div>
+              {errors.username && (
+                <p className="mt-2 text-sm text-red-600">{errors.username}</p>
+              )}
             </div>
 
-            {/* Email Field */}
-            <div style={styles.fieldGroup}>
-              <label htmlFor="email" style={styles.label}>Email Address</label>
-              <div style={styles.inputContainer}>
-                <Mail style={styles.inputIcon} />
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email address
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiMail className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type="email"
                   id="email"
                   name="email"
+                  type="email"
+                  autoComplete="email"
                   value={formData.email}
-                  onChange={handleInputChange}
-                  style={styles.input}
-                  placeholder="Enter your email"
-                  required
+                  onChange={handleChange}
+                  className={`block w-full pl-10 pr-3 py-2 border ${errors.email ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : 'border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500'} rounded-md shadow-sm`}
+                  placeholder="you@example.com"
                 />
               </div>
+              {errors.email && (
+                <p className="mt-2 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
 
-            {/* Password Field */}
-            <div style={styles.fieldGroup}>
-              <label htmlFor="password" style={styles.label}>Password</label>
-              <div style={styles.inputContainer}>
-                <Lock style={styles.inputIcon} />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
                   value={formData.password}
-                  onChange={handleInputChange}
-                  style={{ ...styles.input, ...styles.inputWithIcon }}
-                  placeholder="Create a password"
-                  required
+                  onChange={handleChange}
+                  className={`block w-full pl-10 pr-10 py-2 border ${errors.password ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : 'border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500'} rounded-md shadow-sm`}
+                  placeholder="••••••••"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={styles.eyeButton}
-                >
-                  {showPassword ? 
-                    <EyeOff style={{ width: '20px', height: '20px' }} /> : 
-                    <Eye style={{ width: '20px', height: '20px' }} />
-                  }
-                </button>
-              </div>
-              
-              {/* Password Strength Indicator */}
-              {formData.password && (
-                <div style={styles.strengthContainer}>
-                  <div style={styles.strengthHeader}>
-                    <span style={styles.strengthLabel}>Password Strength</span>
-                    <span style={{
-                      ...styles.strengthValue,
-                      color: strengthInfo.color
-                    }}>
-                      {strengthInfo.label}
-                    </span>
-                  </div>
-                  <div style={styles.strengthBar}>
-                    <div 
-                      style={{
-                        ...styles.strengthFill,
-                        width: `${strengthInfo.strength}%`,
-                        backgroundColor: strengthInfo.color
-                      }}
-                    />
-                  </div>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    type="button"
+                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <FiEyeOff className="h-5 w-5" />
+                    ) : (
+                      <FiEye className="h-5 w-5" />
+                    )}
+                  </button>
                 </div>
+              </div>
+              {errors.password && (
+                <p className="mt-2 text-sm text-red-600">{errors.password}</p>
               )}
             </div>
 
-            {/* Confirm Password Field */}
-            <div style={styles.fieldGroup}>
-              <label htmlFor="confirmPassword" style={styles.label}>Confirm Password</label>
-              <div style={styles.inputContainer}>
-                <Lock style={styles.inputIcon} />
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                Confirm Password
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FiLock className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type={showConfirmPassword ? 'text' : 'password'}
                   id="confirmPassword"
                   name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  autoComplete="new-password"
                   value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  style={{
-                    ...styles.input,
-                    ...styles.inputWithIcon,
-                    ...(formData.confirmPassword && !passwordValidation.match ? styles.inputError : {})
-                  }}
-                  placeholder="Confirm your password"
-                  required
+                  onChange={handleChange}
+                  className={`block w-full pl-10 pr-10 py-2 border ${errors.confirmPassword ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : 'border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-purple-500 focus:border-purple-500'} rounded-md shadow-sm`}
+                  placeholder="••••••••"
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  style={styles.eyeButton}
-                >
-                  {showConfirmPassword ? 
-                    <EyeOff style={{ width: '20px', height: '20px' }} /> : 
-                    <Eye style={{ width: '20px', height: '20px' }} />
-                  }
-                </button>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                  <button
+                    type="button"
+                    className="text-gray-400 hover:text-gray-500 focus:outline-none"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <FiEyeOff className="h-5 w-5" />
+                    ) : (
+                      <FiEye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
               </div>
-              {formData.confirmPassword && !passwordValidation.match && (
-                <p style={styles.errorText}>Passwords do not match</p>
+              {errors.confirmPassword && (
+                <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>
               )}
             </div>
 
-            {/* Password Requirements */}
-            {formData.password && (
-              <div style={styles.requirementsCard}>
-                <h4 style={styles.requirementsTitle}>Password Requirements:</h4>
-                <div style={styles.requirementsList}>
-                  {requirements.map((req) => (
-                    <div key={req.key} style={styles.requirementItem}>
-                      {req.valid ? (
-                        <Check style={{ width: '16px', height: '16px', color: '#10b981' }} />
-                      ) : (
-                        <X style={{ width: '16px', height: '16px', color: '#ef4444' }} />
-                      )}
-                      <span style={{
-                        ...styles.requirementText,
-                        color: req.valid ? '#10b981' : '#9ca3af'
-                      }}>
-                        {req.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Terms Agreement */}
-            <div style={styles.termsContainer}>
+            <div className="flex items-center">
               <input
+                id="terms"
+                name="terms"
                 type="checkbox"
-                id="agreeToTerms"
-                name="agreeToTerms"
-                checked={formData.agreeToTerms}
-                onChange={handleInputChange}
-                style={styles.checkbox}
+                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
                 required
               />
-              <label htmlFor="agreeToTerms" style={styles.termsText}>
-                I agree to the{' '}
-                <a href="#" style={styles.termsLink}>Terms of Service</a>
-                {' '}and{' '}
-                <a href="#" style={styles.termsLink}>Privacy Policy</a>
+              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+                I agree to the <Link to="/terms" className="text-purple-600 hover:text-purple-500">Terms of Service</Link> and <Link to="/privacy" className="text-purple-600 hover:text-purple-500">Privacy Policy</Link>
               </label>
             </div>
 
-            {/* Register Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={isLoading || !formData.agreeToTerms || !passwordValidation.match}
-              style={{
-                ...styles.registerButton,
-                ...(isLoading || !formData.agreeToTerms || !passwordValidation.match ? styles.registerButtonDisabled : {})
-              }}
-              onMouseEnter={(e) => {
-                if (!isLoading && formData.agreeToTerms && passwordValidation.match) {
-                  e.target.style.transform = 'scale(1.05)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isLoading && formData.agreeToTerms && passwordValidation.match) {
-                  e.target.style.transform = 'scale(1)';
-                }
-              }}
-            >
-              {isLoading ? (
-                <div style={styles.loadingContainer}>
-                  <div style={styles.spinner}></div>
-                  Creating Account...
-                </div>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </div>
+            <div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Registering...
+                  </>
+                ) : 'Register'}
+              </button>
+            </div>
+          </form>
 
-          {/* Divider */}
-          <div style={styles.divider}>
-            <div style={styles.dividerInner}>
-              <div style={styles.dividerLine}>
-                <div style={styles.dividerBorder}></div>
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
               </div>
-              <div style={styles.dividerText}>
-                <span style={styles.dividerTextSpan}>Or sign up with</span>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Already have an account?
+                </span>
               </div>
             </div>
-          </div>
 
-          {/* Social Login */}
-          <div style={styles.socialButtons}>
-            {socialLogins.map((social) => (
-              <button
-                key={social.name}
-                style={styles.socialButton}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                  e.target.style.transform = 'scale(1.05)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                  e.target.style.transform = 'scale(1)';
-                }}
-              >
-                <social.icon style={{ width: '20px', height: '20px', color: 'white' }} />
-              </button>
-            ))}
-          </div>
-
-          {/* Login Link */}
-          <div style={styles.loginLink}>
-            <p style={styles.loginText}>
-              Already have an account?{' '}
-              <a 
-                href="#" 
-                style={styles.loginLinkText}
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (props.onNavigateToLogin) {
-                    props.onNavigateToLogin();
-                  }
-                }}
+            <div className="mt-6">
+              <Link
+                to="/login"
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               >
                 Sign in
-              </a>
-            </p>
+              </Link>
+            </div>
           </div>
         </div>
-
-        {/* Footer */}
-        <div style={styles.footer}>
-          <p>© 2025 GameVault. All rights reserved.</p>
-        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
-        }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        input:focus {
-          ring: 2px solid #7c3aed !important;
-          border-color: transparent !important;
-        }
-        input::placeholder {
-          color: #9ca3af;
-        }
-        a:hover {
-          color: #a855f7 !important;
-        }
-      `}</style>
     </div>
   );
 };

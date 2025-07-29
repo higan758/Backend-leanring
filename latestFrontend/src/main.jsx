@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';       // ✅ import Provider
 import store from './store/store';            // ✅ import your Redux store
-
+import React from 'react';
 import './index.css';
 import App from './App.jsx';
 
