@@ -9,82 +9,128 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     // Simulate API fetch for product details
     const fetchProduct = async () => {
       try {
         // In a real app, this would be an API call with productCode
-        const mockProduct = {
-          "ProductName": "Elderborn: Chronicles of Valara",
-          "ProductCode": productCode || "GAME-VALARA-2025-EX92345",
-          "Price": 49.99,
-          "Stock": 120,
-          "Thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-          "Description": "An epic open-world RPG where you battle mythic beasts and uncover ancient secrets in the realm of Valara.",
-          "Rating": 4.8,
-          "Reviews": 215,
-          "Developer": "Valara Studios",
-          "Publisher": "Epic Games Publishing",
-          "ReleaseDate": "2025-03-15",
-          "Genre": ["RPG", "Open World", "Adventure"],
-          "Platforms": ["PC", "PS5", "Xbox Series X"],
-          "Screenshots": [
-            "https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-          ],
-          "Features": [
-            "Vast open world to explore",
-            "Deep character customization",
-            "Dynamic combat system",
-            "Rich storyline with multiple endings",
-            "Online co-op mode"
-          ]
+        const mockProducts = {
+          "GAME-VALARA-2025-EX92345": {
+            "ProductName": "Elderborn: Chronicles of Valara",
+            "Price": 49.99,
+            "Stock": 120,
+            "Thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "Description": "An epic open-world RPG where you battle mythic beasts and uncover ancient secrets in the realm of Valara.",
+            "Rating": 4.8,
+            "Reviews": 215,
+            "Developer": "Valara Studios",
+            "Publisher": "Epic Games Publishing",
+            "ReleaseDate": "2025-03-15",
+            "Genre": ["RPG", "Open World", "Adventure"],
+            "Platforms": ["PC", "PS5", "Xbox Series X"],
+            "Screenshots": [
+              "https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1543857778-c4a1a3e0b2eb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            ],
+            "Features": [
+              "Vast open world to explore with dynamic weather",
+              "Deep character customization with 12 unique classes",
+              "Real-time combat with tactical elements",
+              "Branching storyline with 36 possible endings",
+              "4-player online co-op mode"
+            ]
+          },
+          "GAME-CYBER-2077-NX78451": {
+            "ProductName": "Cyber Nexus 2077",
+            "Price": 59.99,
+            "Stock": 85,
+            "Thumbnail": "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "Description": "Immerse yourself in a dystopian future filled with high-tech gadgets and cyber-enhanced gameplay in this groundbreaking action RPG.",
+            "Rating": 4.5,
+            "Reviews": 189,
+            "Developer": "Neon Dreams Interactive",
+            "Publisher": "FutureTech Games",
+            "ReleaseDate": "2023-11-21",
+            "Genre": ["Action", "Cyberpunk", "FPS"],
+            "Platforms": ["PC", "PS5"],
+            "Screenshots": [
+              "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1549317661-bd32b8e9b8e1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            ],
+            "Features": [
+              "Neon-lit open world city with day/night cycle",
+              "Cyberware augmentation system with 50+ upgrades",
+              "First-person shooter mechanics with RPG progression",
+              "Non-linear story with meaningful choices",
+              "Vehicle combat and hacking mini-games"
+            ]
+          },
+          "GAME-STAR-2024-SL45210": {
+            "ProductName": "Starlight Strategy",
+            "Price": 39.99,
+            "Stock": 45,
+            "Thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "Description": "Command interstellar fleets and build your empire across the galaxy in this 4X strategy masterpiece with turn-based tactical combat.",
+            "Rating": 4.7,
+            "Reviews": 92,
+            "Developer": "Cosmic Forge Studios",
+            "Publisher": "Strategy First",
+            "ReleaseDate": "2024-06-10",
+            "Genre": ["Strategy", "Space", "4X"],
+            "Platforms": ["PC", "Mac"],
+            "Screenshots": [
+              "https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            ],
+            "Features": [
+              "Build and manage a space empire across 100+ star systems",
+              "Turn-based tactical combat with customizable ships",
+              "16 unique alien races with distinct playstyles",
+              "Deep technology tree with 200+ research options",
+              "Multiplayer mode with up to 8 players"
+            ]
+          },
+          "GAME-SHADOW-2025-FT36987": {
+            "ProductName": "Shadow of the Forgotten",
+            "Price": 54.99,
+            "Stock": 62,
+            "Thumbnail": "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+            "Description": "A dark fantasy adventure with souls-like combat and hauntingly beautiful environments in a world consumed by darkness.",
+            "Rating": 4.9,
+            "Reviews": 156,
+            "Developer": "Dark Realm Games",
+            "Publisher": "Midnight Studios",
+            "ReleaseDate": "2025-02-28",
+            "Genre": ["Adventure", "Action", "RPG"],
+            "Platforms": ["PC", "PS5", "Xbox Series X", "Switch"],
+            "Screenshots": [
+              "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1534423855097-49e3f5b85c6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+              "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            ],
+            "Features": [
+              "Challenging souls-like combat with parry and dodge mechanics",
+              "Atmospheric open world with dynamic lighting",
+              "Character progression with 7 skill trees",
+              "Crafting system using materials from defeated enemies",
+              "New Game+ mode with additional challenges"
+            ]
+          }
         };
 
-        // Simulate similar products API call
-        const mockSimilarProducts = [
-          {
-            "ProductName": "Shadow Realms",
-            "ProductCode": "GAME-SHADOW-2024-SR78451",
-            "Price": 44.99,
-            "Stock": 85,
-            "Thumbnail": "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "Description": "Dark fantasy action RPG with souls-like combat mechanics.",
-            "Rating": 4.6
-          },
-          {
-            "ProductName": "Cyber Odyssey",
-            "ProductCode": "GAME-CYBER-2024-CO45210",
-            "Price": 54.99,
-            "Stock": 110,
-            "Thumbnail": "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "Description": "Neon-lit cyberpunk adventure with branching narratives.",
-            "Rating": 4.4
-          },
-          {
-            "ProductName": "Dragon's Legacy",
-            "ProductCode": "GAME-DRAGON-2025-DL96321",
-            "Price": 59.99,
-            "Stock": 65,
-            "Thumbnail": "https://images.unsplash.com/photo-1534423855097-49e3f5b85c6a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "Description": "High fantasy RPG with dragon companions and epic battles.",
-            "Rating": 4.7
-          },
-          {
-            "ProductName": "Wasteland Nomads",
-            "ProductCode": "GAME-WASTE-2024-WN78520",
-            "Price": 39.99,
-            "Stock": 95,
-            "Thumbnail": "https://images.unsplash.com/photo-1549317661-bd32b8e9b8e1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-            "Description": "Post-apocalyptic survival RPG with base building.",
-            "Rating": 4.3
-          }
-        ];
+        // Get similar products (exclude current product)
+        const currentProduct = mockProducts[productCode] || mockProducts["GAME-VALARA-2025-EX92345"];
+        const similar = Object.values(mockProducts)
+          .filter(p => p.ProductName !== currentProduct.ProductName)
+          .slice(0, 4);
 
-        setProduct(mockProduct);
-        setSimilarProducts(mockSimilarProducts);
+        setProduct(currentProduct);
+        setSimilarProducts(similar);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -96,13 +142,14 @@ const Product = () => {
   }, [productCode]);
 
   const handleAddToCart = () => {
-    // Add to cart functionality
     console.log(`Added ${quantity} of ${product.ProductName} to cart`);
+    // In a real app, you would add to cart context/state
   };
 
   const handleWishlist = () => {
-    // Add to wishlist functionality
-    console.log(`Added ${product.ProductName} to wishlist`);
+    setIsFavorite(!isFavorite);
+    console.log(`${isFavorite ? 'Removed from' : 'Added to'} wishlist: ${product.ProductName}`);
+    // In a real app, you would update user's wishlist
   };
 
   if (loading) {
@@ -180,9 +227,9 @@ const Product = () => {
                 </div>
                 <button 
                   onClick={handleWishlist}
-                  className="text-gray-400 hover:text-red-500"
+                  className={`${isFavorite ? 'text-red-500' : 'text-gray-400'} hover:text-red-500`}
                 >
-                  <FiHeart className="w-6 h-6" />
+                  <FiHeart className={`w-6 h-6 ${isFavorite ? 'fill-current' : ''}`} />
                 </button>
               </div>
 
@@ -269,8 +316,8 @@ const Product = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Similar Games You Might Like</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {similarProducts.map((game) => (
-              <div key={game.ProductCode} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <Link to={`/product/${game.ProductCode}`}>
+              <div key={game.ProductName} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                <Link to={`/product/${game.ProductCode || 'GAME-VALARA-2025-EX92345'}`}>
                   <div className="h-48 bg-gray-200 overflow-hidden">
                     <img 
                       src={game.Thumbnail} 

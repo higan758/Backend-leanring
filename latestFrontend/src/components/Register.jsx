@@ -67,17 +67,36 @@ const Register = () => {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
       // On successful registration
-      console.log('Registration successful', formData);
-      navigate('/'); // Redirect to home page
+      console.log('Registration successful', data);
+      
+      // Optionally auto-login the user after registration
+      // Or redirect to login page with success message
+      navigate('/login', { state: { registrationSuccess: true } });
+      
     } catch (error) {
       console.error('Registration error:', error);
       setErrors({
         ...errors,
-        server: 'Registration failed. Please try again.'
+        server: error.message || 'Registration failed. Please try again.'
       });
     } finally {
       setIsSubmitting(false);
