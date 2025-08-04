@@ -16,6 +16,7 @@ import Profile from "./pages/Profile.jsx";
 
 import MainLayout from "./components/MainLayout.jsx";
 import AuthLayout from "./components/AuthLayout.jsx";
+import AboutUs from "./pages/aboutus.jsx";
 
 function App() {
   return (
@@ -30,8 +31,9 @@ function App() {
             <Route path="success" element={<PaymentSuccess />} />
             <Route path="products" element={<ProductList />} />
             <Route path="product/:productCode" element={<Product />} />
+            <Route path="about" element={<AboutUs/>} />
             <Route path="favorites" element={<Favourites />} />
-            <Route path="profile" element={<Profile />} />cc
+            <Route path="profile" element={<Profile />} />
           </Route>
 
           {/* Auth Layout for login/register pages */}
