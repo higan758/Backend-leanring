@@ -18,7 +18,7 @@ const Nav = () => {
           {/* Left side navigation */}
           <div className="flex items-center space-x-8">
             <Link to="/" className="text-xl font-bold text-purple-400">
-              GameHub
+              MyStore
             </Link>
             <div className="hidden md:flex space-x-6">
               <Link 

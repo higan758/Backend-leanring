@@ -1,32 +1,20 @@
-// src/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import AdminLayout from './Components/AdminLayout';
-import Dashboard from './Components/Dashboard';
-import Products from './Components/Products';
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
 
-const App = () => {
-  const user = JSON.parse(localStorage.getItem('user')) || {};
-  const isAdmin = user?.role === 'admin';
 
+function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/loginadmin" element={<Login />} />
-
-        {isAdmin ? (
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<Users />} />
-            <Route path="products" element={<Products />} />
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          {/* Main Layout for all regular pages */}
+          <Route path="/" element={<MainLayout />}>
           </Route>
-        ) : (
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        )}
-      </Routes>
-    </Router>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   );
-};
+}
 
 export default App;
