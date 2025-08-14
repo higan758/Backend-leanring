@@ -15,7 +15,7 @@ export default function App() {
           <div className="p-6 text-2xl font-bold border-b border-gray-700">Admin Panel</div>
           <nav className="flex-1 p-4 space-y-2">
             <Link to="/admin" className="block p-2 rounded hover:bg-gray-700">Dashboard</Link>
-            <Link to="/admin/products" className="block p-2 rounded hover:bg-gray-700">Products</Link>
+            <Link to="/products" className="block p-2 rounded hover:bg-gray-700">Products</Link>
             <Link to="/admin/users" className="block p-2 rounded hover:bg-gray-700">Users</Link>
           </nav>
         </aside>
